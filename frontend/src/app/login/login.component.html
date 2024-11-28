@@ -1,0 +1,89 @@
+<div class="container">
+<app-cover></app-cover>
+
+  <h2 class="text-center section-title">
+    <span> Login to author account </span>
+  </h2>
+
+  <form [formGroup]="loginFormGroup" (ngSubmit)="login()" class="col-6 mx-auto">
+    <div class="mb-3">
+      <label class="form-label" for="email">Email</label>
+
+      <input
+        name="email"
+        formControlName="email"
+        type="text"
+        class="form-control m-1"
+        placeholder="email"
+      />
+      <span
+        *ngIf="
+          loginFormGroup.controls['email'].touched &&
+          loginFormGroup.controls['email'].errors &&
+          loginFormGroup.controls['email'].errors?.['required']
+        "
+        class="text-danger"
+      >
+        Email is required
+      </span>
+      <span
+        *ngIf="
+          loginFormGroup.controls['email'].touched &&
+          loginFormGroup.controls['email'].errors &&
+          loginFormGroup.controls['email'].errors?.['email']
+        "
+        class="text-danger"
+      >
+        Invalid email
+      </span>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label" for="password">Password</label>
+      <input
+        name="password"
+        formControlName="password"
+        type="password"
+        class="form-control m-1"
+        placeholder="password"
+      />
+
+      <span
+        *ngIf="
+        loginFormGroup.controls['password'].touched &&
+        loginFormGroup.controls['password'].errors &&
+        loginFormGroup.controls['password'].errors?.['required']
+      "
+        class="text-danger"
+      >
+        Password is required
+      </span>
+      <span
+        *ngIf="
+        loginFormGroup.controls['password'].touched &&
+        loginFormGroup.controls['password'].errors &&
+        loginFormGroup.controls['password'].errors?.['minlength']
+      "
+        class="text-danger"
+      >
+        Password must be at least 6 characters
+      </span>
+    </div>
+
+    <button
+      [disabled]="loginFormGroup.invalid"
+      type="submit"
+      class="d-flex justify-content-center align-items-center btn btn-primary form-control"
+    >
+      <div
+        *ngIf="isLoading; else createText"
+        class="spinner-border text-light"
+        role="status"
+      ></div>
+      <ng-template #createText>
+        <span> Login </span>
+      </ng-template>
+    </button>
+    <span class="text-danger">{{ errorMessage}}</span>
+  </form>
+</div>

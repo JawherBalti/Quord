@@ -1,0 +1,220 @@
+<div class="container mt-4 pt-5">
+  <h2 class="text-center section-title">
+    <span>Create article</span>
+  </h2>
+  <form
+    [formGroup]="createArticleFormGroup"
+    (ngSubmit)="create()"
+    (keydown)="onFormKeyDown($event)"
+    class="col-6 mx-auto"
+  >
+    <div class="mb-3">
+      <label class="form-label" for="title">Title</label>
+      <input
+        name="title"
+        formControlName="title"
+        type="text"
+        class="form-control m-1"
+        placeholder="title"
+      />
+
+      <span
+        class="text-danger"
+        *ngIf="createArticleFormGroup.controls['title'].touched &&
+        createArticleFormGroup.controls['title'].errors &&
+        createArticleFormGroup.controls['title'].errors?.['required']"
+      >
+        Title is reauired
+      </span>
+
+      <span
+        class="text-danger"
+        *ngIf="createArticleFormGroup.controls['title'].touched &&
+        createArticleFormGroup.controls['title'].errors &&
+        createArticleFormGroup.controls['title'].errors?.['minlength']"
+      >
+        Title must be at least 10 characters
+      </span>
+
+      <span
+        class="text-danger"
+        *ngIf="createArticleFormGroup.controls['title'].touched &&
+      createArticleFormGroup.controls['title'].errors &&
+      createArticleFormGroup.controls['title'].errors?.['maxlength']"
+      >
+        Title must have less than 100 characters
+      </span>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label" for="tags">Tags</label>
+      <ul class="d-flex gap-2 w-100 flex-wrap">
+        <li
+          class="bg-dark d-flex justify-content-between align-items-center rounded-pill post-tag"
+          *ngFor="let tag of tags; index as idx"
+        >
+          <span>
+            {{ tag }}
+          </span>
+
+          <span (click)="removeTag(idx)" class="col-1 ms-2" role="button">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="currentColor"
+              class="bi bi-x-circle text-light"
+              viewBox="0 0 16 16"
+              width="10"
+            >
+              <path
+                d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"
+              />
+              <path
+                d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"
+              />
+            </svg>
+          </span>
+        </li>
+      </ul>
+      <div class="row m-1">
+        <input
+          name="tags"
+          formControlName="tag"
+          type="text"
+          class="form-control w-75"
+          placeholder="tag"
+          (keydown)="onTagKeyDown($event)"
+          [disabled]="tags.length >= 5"
+        />
+        <button
+          [disabled]="tags.length >= 5"
+          (click)="addTag($event)"
+          class="btn btn-light text-dark w-25"
+        >
+          Add
+        </button>
+      </div>
+      <span
+      class="text-danger"
+      *ngIf="createArticleFormGroup.controls['tag'].touched &&
+      tags.length===0
+      "
+    >
+      Add at least 1 tag
+    </span>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label" for="cover">Article cover</label>
+      <input
+        name="cover"
+        (change)="select($event)"
+        type="file"
+        class="form-control m-1"
+        placeholder="image"
+      />
+
+      <span
+        class="text-danger"
+        *ngIf="createArticleFormGroup.get('image')!.hasError('required')"
+        >Please select an image</span
+      >
+      <span
+        class="text-danger"
+        *ngIf="createArticleFormGroup.get('image')!.hasError('imageSize')"
+        >Image size should be less than 1MB</span
+      >
+      <span
+        class="text-danger"
+        *ngIf="createArticleFormGroup.get('image')!.hasError('imageType')"
+        >Only JPEG or PNG images are allowed</span
+      >
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label" for="description">Description</label>
+      <textarea
+        name="description"
+        title=""
+        id=""
+        cols="30"
+        rows="4"
+        placeholder="description"
+        class="form-control m-1 text-light"
+        formControlName="description"
+      ></textarea>
+
+      <span
+        class="text-danger"
+        *ngIf="createArticleFormGroup.controls['description'].touched &&
+      createArticleFormGroup.controls['description'].errors &&
+      createArticleFormGroup.controls['description'].errors?.['required']"
+      >
+        Description is required
+      </span>
+
+      <span
+        class="text-danger"
+        *ngIf="createArticleFormGroup.controls['description'].touched &&
+      createArticleFormGroup.controls['description'].errors &&
+      createArticleFormGroup.controls['description'].errors?.['minlength']"
+      >
+        Description must be at least 20 characters
+      </span>
+
+      <span
+        class="text-danger"
+        *ngIf="createArticleFormGroup.controls['description'].touched &&
+    createArticleFormGroup.controls['description'].errors &&
+    createArticleFormGroup.controls['description'].errors?.['maxlength']"
+      >
+        Description must have less than 200 characters
+      </span>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label" for="content">Content</label>
+      <div class="m-1">
+        <angular-editor
+          name="content"
+          formControlName="content"
+          [placeholder]="'Enter text here...'"
+        ></angular-editor>
+      </div>
+
+      <span
+        class="text-danger"
+        *ngIf="createArticleFormGroup.controls['content'].touched &&
+      createArticleFormGroup.controls['content'].errors &&
+      createArticleFormGroup.controls['content'].errors?.['required']"
+      >
+        Content is reauired
+      </span>
+
+      <span
+        class="text-danger"
+        *ngIf="createArticleFormGroup.controls['content'].touched &&
+      createArticleFormGroup.controls['content'].errors &&
+      createArticleFormGroup.controls['content'].errors?.['minlength']"
+      >
+        Content must be at least 200 characters
+      </span>
+    </div>
+
+    <button
+      [disabled]="
+        createArticleFormGroup.invalid || tags.length > 5 || tags.length === 0
+      "
+      type="submit"
+      class="btn btn-primary form-control m-1"
+    >
+      <div
+        *ngIf="isLoading; else createText"
+        class="spinner-border text-light"
+        role="status"
+      ></div>
+      <ng-template #createText>
+        <span> Create </span>
+      </ng-template>
+    </button>
+  </form>
+</div>

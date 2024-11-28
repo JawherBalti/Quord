@@ -1,0 +1,74 @@
+<section class="section-sm pb-0">
+  <div class="container">
+    <ng-template #loadingOrError>
+      <div *ngIf="errorMessage; else loading">
+        <div
+          *ngIf="errorMessage.includes('400 Bad Request')"
+          class="text-center text-danger"
+        >
+          {{ errorMessage }}
+        </div>
+        <app-notfound
+          *ngIf="errorMessage.includes('404 Not Found') && !(article$ | async)"
+        ></app-notfound>
+      </div>
+      <ng-template #loading>
+        <div class="text-center">
+          <div class="spinner-border text-light" role="status"></div>
+        </div>
+      </ng-template>
+    </ng-template>
+    <div
+      *ngIf="article$ | async as article; else loadingOrError"
+      class="row justify-content-center"
+    >
+      <div class="col-lg-10">
+        <div class="mb-5">
+          <h3 class="h1 mb-4 post-title">
+            {{ article.title }}
+          </h3>
+          <ul class="card-meta list-inline mb-2">
+            <li *ngIf="author$ | async as author" class="list-inline-item mt-2">
+              <a
+                [routerLink]="['/author', article.authorId._id]"
+                class="card-meta-author"
+              >
+                <img
+                  class="rounded-circle"
+                  [src]="imageUrl + author.image"
+                  alt="Author picture"
+                />
+                by <span>{{ author.name + " " + author.lastName }}</span>
+              </a>
+            </li>
+            <li class="list-inline-item mt-2">—</li>
+            <li class="list-inline-item mt-2">
+              <i class="ti ti-clock"></i>
+              <span>{{ article.date | date }}</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-lg-12">
+        <div class="post-cover mb-5 text-center">
+          <img
+            class="w-100 h-auto rounded"
+            [src]="imageUrl + article.image"
+            alt="What does it take to create an object that travels at 1% the speed of light?"
+          />
+        </div>
+      </div>
+
+      <div class="col-lg-8 post-content-block order-0 order-lg-2">
+        <div class="content" [innerHTML]="article.content"></div>
+
+        <ul class="post-meta-tag list-unstyled list-inline mt-5">
+          <li class="list-inline-item">Tags:</li>
+          <li class="list-inline-item" *ngFor="let tag of article.tags">
+            <a class="bg-white" href="tag-single.html">{{ tag }}</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>

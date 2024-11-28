@@ -1,0 +1,47 @@
+<section>
+  <div class="container">
+    <div class="col-12 text-center mt-5">
+      <h2 class="section-title">
+        <span>Recent posts</span>
+      </h2>
+    </div>
+    <ng-template #loadingOrError>
+      <div class="row">
+        <div class="col-12 text-center">
+          <div *ngIf="errorMessage; else loading" class="text-danger">
+            {{ errorMessage }}
+          </div>
+          <ng-template #loading>
+            <div class="spinner-border text-light" role="status"></div>
+          </ng-template>
+        </div>
+      </div>
+    </ng-template>
+
+    <div
+      *ngIf="articles$ | async; else loadingOrError"
+      class="row gy-5 gx-4 g-xl-5"
+    >
+      <div *ngFor="let article of articles$ | async" class="col-lg-6">
+        <app-article [article]="article"></app-article>
+      </div>
+
+      <div
+        *ngIf="loadedArticlesCount < totalArticles"
+        class="col-12 text-center mt-5"
+      >
+        <button
+          *ngIf="!isLoading; else loadingButton"
+          (click)="loadMore()"
+          class="btn btn-primary mt-5"
+          aria-label="View all posts"
+        >
+          <i class="ti ti-new-section me-2"></i>Load more
+        </button>
+        <ng-template #loadingButton>
+          <div class="spinner-border text-light" role="status"></div>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</section>

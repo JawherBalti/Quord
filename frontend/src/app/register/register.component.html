@@ -1,0 +1,254 @@
+<div class="container">
+  <app-cover></app-cover>
+
+  <h2 class="text-center section-title">
+    <span> Create author account </span>
+  </h2>
+
+  <form
+    [formGroup]="registerFormGroup"
+    (ngSubmit)="register()"
+    class="col-6 mx-auto"
+  >
+    <div class="mb-3">
+      <label class="form-label" for="name">First name</label>
+      <input
+        name="name"
+        formControlName="name"
+        type="text"
+        class="form-control m-1"
+        placeholder="name"
+      />
+      <span
+        *ngIf="
+        registerFormGroup.controls['name'].touched &&
+        registerFormGroup.controls['name'].errors &&
+        registerFormGroup.controls['name'].errors?.['required']
+      "
+        class="text-danger"
+      >
+        Name is required
+      </span>
+
+      <span
+        *ngIf="
+        registerFormGroup.controls['name'].touched &&
+        registerFormGroup.controls['name'].errors &&
+        registerFormGroup.controls['name'].errors?.['minlength']
+      "
+        class="text-danger"
+      >
+        Name must be at least 3 characters
+      </span>
+
+      <span
+        *ngIf="
+        registerFormGroup.controls['name'].touched &&
+        registerFormGroup.controls['name'].errors &&
+        registerFormGroup.controls['name'].errors?.['maxlength']
+      "
+        class="text-danger"
+      >
+        Name must be less than 20 characters
+      </span>
+    </div>
+
+    <div class="mb-3">
+      <label for="lastName" class="form-label">Last name</label>
+      <input
+        name="lastName"
+        formControlName="lastName"
+        type="text"
+        class="form-control m-1"
+        placeholder="lastname"
+      />
+
+      <span
+        *ngIf="
+      registerFormGroup.controls['lastName'].touched &&
+      registerFormGroup.controls['lastName'].errors &&
+      registerFormGroup.controls['lastName'].errors?.['required']
+    "
+        class="text-danger"
+      >
+        Last name is required
+      </span>
+
+      <span
+        *ngIf="
+      registerFormGroup.controls['lastName'].touched &&
+      registerFormGroup.controls['lastName'].errors &&
+      registerFormGroup.controls['lastName'].errors?.['minlength']
+    "
+        class="text-danger"
+      >
+        Last name must be at least 3 characters
+      </span>
+
+      <span
+        *ngIf="
+      registerFormGroup.controls['lastName'].touched &&
+      registerFormGroup.controls['lastName'].errors &&
+      registerFormGroup.controls['lastName'].errors?.['maxlength']
+    "
+        class="text-danger"
+      >
+        Last name must be less than 20 characters
+      </span>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label" for="email">Email</label>
+
+      <input
+        name="email"
+        formControlName="email"
+        type="text"
+        class="form-control m-1"
+        placeholder="email"
+      />
+
+      <span
+        *ngIf="
+      registerFormGroup.controls['email'].touched &&
+      registerFormGroup.controls['email'].errors &&
+      registerFormGroup.controls['email'].errors?.['required']
+    "
+        class="text-danger"
+      >
+        Email is required
+      </span>
+      <span
+        *ngIf="
+      registerFormGroup.controls['email'].touched &&
+      registerFormGroup.controls['email'].errors &&
+      registerFormGroup.controls['email'].errors?.['email']
+    "
+        class="text-danger"
+      >
+        Invalid email
+      </span>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label" for="password">Password</label>
+
+      <input
+        name="password"
+        formControlName="password"
+        type="password"
+        class="form-control m-1"
+        placeholder="password"
+      />
+      <span
+        *ngIf="
+        registerFormGroup.controls['password'].touched &&
+        registerFormGroup.controls['password'].errors &&
+        registerFormGroup.controls['password'].errors?.['required']
+      "
+        class="text-danger"
+      >
+        Password is required
+      </span>
+      <span
+        *ngIf="
+        registerFormGroup.controls['password'].touched &&
+        registerFormGroup.controls['password'].errors &&
+        registerFormGroup.controls['password'].errors?.['minlength']
+      "
+        class="text-danger"
+      >
+        Password must be at least 6 characters
+      </span>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label" for="picture">Profile picture</label>
+      <input
+        name="picture"
+        (change)="select($event)"
+        type="file"
+        class="form-control m-1"
+        placeholder="image"
+      />
+
+      <span
+        class="text-danger"
+        *ngIf="registerFormGroup.get('image')!.hasError('required')"
+        >Please select an image</span
+      >
+      <span
+        class="text-danger"
+        *ngIf="registerFormGroup.get('image')!.hasError('imageSize')"
+        >Image size should be less than 1MB</span
+      >
+      <span
+        class="text-danger"
+        *ngIf="registerFormGroup.get('image')!.hasError('imageType')"
+        >Only JPEG or PNG images are allowed</span
+      >
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label" for="about">Author description</label>
+      <textarea
+        formControlName="about"
+        name="about"
+        id=""
+        cols="30"
+        rows="4"
+        placeholder="about"
+        class="form-control m-1 text-light"
+      ></textarea>
+
+      <span
+        *ngIf="
+      registerFormGroup.controls['about'].touched &&
+      registerFormGroup.controls['about'].errors &&
+      registerFormGroup.controls['about'].errors?.['required']
+    "
+        class="text-danger"
+      >
+        About is required
+      </span>
+
+      <span
+        *ngIf="
+    registerFormGroup.controls['about'].touched &&
+    registerFormGroup.controls['about'].errors &&
+    registerFormGroup.controls['about'].errors?.['minlength']
+  "
+        class="text-danger"
+      >
+        About must be at least 30 characters
+      </span>
+
+      <span
+        *ngIf="
+  registerFormGroup.controls['about'].touched &&
+  registerFormGroup.controls['about'].errors &&
+  registerFormGroup.controls['about'].errors?.['maxlength']
+"
+        class="text-danger"
+      >
+        About must be less than 200 characters
+      </span>
+    </div>
+
+    <button
+      [disabled]="registerFormGroup.invalid"
+      type="submit"
+      class="d-flex justify-content-center align-items-center btn btn-primary form-control m-1"
+    >
+      <div
+        *ngIf="isLoading; else createText"
+        class="spinner-border text-light"
+        role="status"
+      ></div>
+      <ng-template #createText>
+        <span> Register</span>
+      </ng-template>
+    </button>
+    <span class="text-danger">{{ errorMessage }}</span>
+  </form>
+</div>

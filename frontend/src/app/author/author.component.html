@@ -1,0 +1,53 @@
+
+
+<app-notfound *ngIf="!isLoading && !author"></app-notfound>
+
+<section class="page-header section-sm">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-10 d-flex justify-content-center">
+        <div *ngIf="isLoading" class="spinner-border text-light" role="status">
+        </div>
+        <div
+        *ngIf="!isLoading && author"
+          class="row g-4 g-lg-5 text-center text-lg-start justify-content-center justify-content-lg-start"
+        >
+          <div class="col-lg-3 col-md-4 col-sm-5 col-6">
+            <img
+              class="img-fluid rounded profile-picture"
+              [src]="imageUrl + author.image"
+              alt="Thomas Macaulay"
+            />
+          </div>
+          <div class="col-lg-9 col-md-12">
+            <p class="mb-2" *ngIf="articles?.length > 1">
+              <span class="fw-bold text-light">{{ articles?.length }}</span>
+              Published posts
+            </p>
+            <p class="mb-2" *ngIf="articles?.length <= 1">
+              <span class="fw-bold text-light">{{ articles?.length }}</span>
+              Published post
+            </p>
+            <h1 class="h3 text-light mb-3">
+              {{ author.name + " " + author.lastName }}
+            </h1>
+            <div class="content">
+              <p>{{ author.about }}</p>
+              <button *ngIf="id===currentAutherId" class="btn btn-primary" routerLink="/create">
+                Create new article
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="container">
+  <div class="row gy-5 gx-4 g-xl-5">
+    <div *ngFor="let article of articles" class="col-lg-6">
+      <app-article [article]="article"></app-article>
+    </div>
+  </div>
+</div>
