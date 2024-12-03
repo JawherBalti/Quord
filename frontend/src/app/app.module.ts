@@ -23,6 +23,8 @@ import { AngularEditorModule } from '@kolkov/angular-editor';
 import { SettingsComponent } from './settings/settings.component';
 import { ArticleComponent } from './article/article.component';
 
+import { DatePipe } from '@angular/common';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -51,7 +53,11 @@ import { ArticleComponent } from './article/article.component';
     HttpClientModule,
     AngularEditorModule,
   ],
-  providers: [provideRouter(routes)],
+  providers: [
+    provideRouter(routes), 
+    DatePipe
+  ],
+
   bootstrap: [AppComponent]
 })
 export class AppModule { }
