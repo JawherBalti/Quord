@@ -24,5 +24,17 @@ export interface Article {
             lastName: string,
             image: string
     }[],
+    comments?: {
+        _id: string,
+        content: string,
+        authorId: {
+            _id: string,
+            name: string,
+            lastName: string,
+            image: string
+        },
+        articleId: string,
+        date: Date
+    }[]
 
 }
