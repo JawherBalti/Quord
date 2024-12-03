@@ -11,11 +11,10 @@ export class HeaderComponent {
   constructor(public _auth: AuthService, private router: Router) { }
 
   currentUser:any = {}
-  imageUrl = "http://localhost:3000/getImage/"
 
   ngOnInit(): void {
     this._auth.userData$.subscribe(userData => {
-      if (userData) {
+      if (userData) {        
         this.currentUser = userData;
       } else {
         // If no data is available, fall back to getting data from token

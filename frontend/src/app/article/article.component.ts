@@ -15,7 +15,6 @@ export class ArticleComponent implements OnInit {
 
 
   @Input() article!: Article; // Use any type or create a specific interface for the article
-  imageUrl = "http://localhost:3000/getImage/";
   currentUser!: AuthorFromToken
   likesList!: { _id: string; name: string; lastName: string; image: string; }[] | undefined
   dislikesList!: { _id: string; name: string; lastName: string; image: string; }[] | undefined

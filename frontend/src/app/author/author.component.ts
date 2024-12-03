@@ -16,7 +16,6 @@ export class AuthorComponent {
   currentAutherId: any
   author: any
   articles: any
-  imageUrl: string = "http://localhost:3000/getImage/"
   isLoading: Boolean = true
 
   private subscription: Subscription = new Subscription();

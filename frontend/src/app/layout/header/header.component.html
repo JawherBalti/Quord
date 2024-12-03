@@ -69,7 +69,7 @@
               alt="Author picture"
               width="50"
               height="50"
-              [src]="imageUrl + currentUser?.image"
+              [src]="currentUser?.image"
               class="rounded-circle border border-secondary dropdown-toggle"
               type="button"
               id="dropdownMenuButton"
@@ -124,11 +124,10 @@
               <div class="dropdown" *ngIf="_auth.isLoggedIn() == true">
                 <li class="nav-item @@contact d-sm-none d-lg-block">
                   <img
-                    *ngIf="currentUser?.image"
                     alt="Author Image"
                     width="50"
                     height="50"
-                    [src]="imageUrl + currentUser?.image"
+                    [src]="currentUser?.image"
                     class="rounded-circle border border-secondary dropdown-toggle"
                     type="button"
                     id="dropdownMenuButton"
