@@ -280,6 +280,11 @@ p {
 .is-hoverable:hover {
   opacity: 0.75;
 }
+.content {
+  word-break: break-word;
+  overflow-wrap: break-word;
+  margin-bottom: 25px;
+}
 .content * {
   word-break: break-word;
   overflow-wrap: break-word;
