@@ -21,7 +21,7 @@ export class AuthorComponent {
   private subscription: Subscription = new Subscription();
 
   ngOnInit(): void {
-    this.currentAutherId = this._auth.getAuthorDataFromToken()._id
+    this.currentAutherId = this._auth.getAuthorDataFromToken()?._id
 
     this.subscription.add(this.activeRoute.paramMap.subscribe(params => {
       this.id = params.get("id");

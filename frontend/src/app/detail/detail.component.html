@@ -78,7 +78,7 @@
           <h3 class="h1 mb-4 post-title" *ngIf="!isEditingTitle">
             {{ article.title }}
             <span
-              *ngIf="currentUser._id === article?.authorId?._id"
+              *ngIf="currentUser?._id === article?.authorId?._id"
               class="ms-2"
               role="button"
               (click)="changeIsEditingTitle()"
@@ -123,7 +123,7 @@
               </li>
             </ul>
             <button
-              *ngIf="currentUser._id === (author$ | async)?._id"
+              *ngIf="currentUser && currentUser?._id === (author$ | async)?._id"
               (click)="deleteArticle(article._id, article.image)"
               class="btn btn-primary m-1"
             >
@@ -186,7 +186,7 @@
       </div>
       <div class="col-lg-12">
         <div
-          *ngIf="currentUser._id !== article.authorId._id"
+          *ngIf="currentUser?._id !== article.authorId._id"
           class="post-cover mb-5 text-center"
         >
           <img
@@ -202,7 +202,7 @@
           Description:
           <span
             *ngIf="
-              !isEditingDescription && currentUser._id === article.authorId._id
+              !isEditingDescription && currentUser?._id === article.authorId._id
             "
             class="ms-2"
             role="button"
@@ -283,7 +283,7 @@
         <h6
           *ngIf="
             !isEditingContent &&
-            currentUser._id === (article$ | async)?.authorId?._id
+            currentUser?._id === (article$ | async)?.authorId?._id
           "
         >
           Content:
@@ -441,7 +441,7 @@
             <a class="bg-white" href="tag-single.html">{{ tag }}</a>
           </li>
           <span
-            *ngIf="currentUser._id === article?.authorId?._id"
+            *ngIf="currentUser?._id === article?.authorId?._id"
             class="ms-2"
             role="button"
             (click)="changeIsEditingTags()"
@@ -460,7 +460,7 @@
             </svg>
           </span>
         </ul>
-        <div>
+        <div *ngIf="currentUser">
           <hr />
           <h6>Comments</h6>
           <div class="row m-1">
