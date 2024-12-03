@@ -1,6 +1,3 @@
-
-
-
 import { Component } from '@angular/core';
 import { AuthService } from '../services/auth.service';
 import { Router } from '@angular/router';
@@ -32,13 +29,36 @@ export class RegisterComponent {
     });
 
     // Add custom validator for image field
-    this.registerFormGroup.get('image')!.setValidators([
-      Validators.required,
-      this.validateImageSize.bind(this),
-      this.validateImageType.bind(this)
-    ]);
+    // this.registerFormGroup.get('image')!.setValidators([
+    //   Validators.required,
+    //   this.validateImageSize.bind(this),
+    //   this.validateImageType.bind(this)
+    // ]);
   }
 
+  
+  // validateImageSize(control: FormControl): { [s: string]: boolean } | null {
+  //   if (!control.value) {
+  //     return null;
+  //   }
+  //   const file = control.value as File;
+  //   if (file.size > 1024 * 1024) { // 1MB limit
+  //     return { 'imageSize': true };
+  //   }
+  //   return null;
+  // }
+
+  // validateImageType(control: FormControl): { [s: string]: boolean } | null {
+  //   if (!control.value) {
+  //     return null;
+  //   }
+  //   const file = control.value
+  //   const allowedTypes = ['image/jpeg', 'image/png'];
+  //   if (!allowedTypes.includes(file.type)) {
+  //     return { 'imageType': true };
+  //   }
+  //   return null;
+  // }
 
   select(e: any) {
     const file = e.target.files[0];
@@ -49,54 +69,50 @@ export class RegisterComponent {
     }
   }
 
-  validateImageSize(control: FormControl): { [s: string]: boolean } | null {
-    if (!control.value) {
-      return null;
-    }
-    const file = control.value as File;
-    if (file.size > 1024 * 1024) { // 1MB limit
-      return { 'imageSize': true };
-    }
-    return null;
-  }
-
-  validateImageType(control: FormControl): { [s: string]: boolean } | null {
-    if (!control.value) {
-      return null;
-    }
-    const file = control.value
-    const allowedTypes = ['image/jpeg', 'image/png'];
-    if (!allowedTypes.includes(file.type)) {
-      return { 'imageType': true };
-    }
-    return null;
-  }
-
   register() {
     this.isLoading = true;
+    const file = this.registerFormGroup.get('image')?.value;
+
+    // Cloudinary upload URL (use unsigned preset for this example)
+    const cloudinaryUrl = 'https://api.cloudinary.com/v1_1/dv1lhvgjr/upload';
     const formData = new FormData();
+  
+    // Add Cloudinary-specific parameters
+    formData.append('file', file);
+    formData.append('upload_preset', 'eiqxfhzq');
 
-    Object.keys(this.registerFormGroup.controls).forEach(key => {
-
-      const control = this.registerFormGroup.get(key);
-
-      if (control && control.value !== null) {
-        formData.append(key, control.value);
-      }
-    });
-
-    this._auth.register(formData)
-      .subscribe({
-        next: res => {
-          this.isLoading = false
-          this.router.navigate(["/login"])
-        },
-        error: err => {
-          this.isLoading = false
-          if (err.status === 400)
-            this.errorMessage = err.error
-          else this.errorMessage = err.message
+        // Upload to Cloudinary
+        fetch(cloudinaryUrl, {
+          method: 'POST',
+          body: formData,
+        })
+      .then(response => response.json())
+      .then(data => {
+      if(data.secure_url) {
+        const userData = {
+          name:this.registerFormGroup.get('name')?.value,
+          lastName:this.registerFormGroup.get('lastName')?.value,
+          email:this.registerFormGroup.get('email')?.value,
+          password:this.registerFormGroup.get('password')?.value,
+          about:this.registerFormGroup.get('about')?.value,
+          image: data.secure_url
         }
+
+        this._auth.register(userData)
+        .subscribe({
+          next: res => {
+            this.isLoading = false
+            this.router.navigate(["/login"])
+          },
+          error: err => {
+            this.isLoading = false
+            if (err.status === 400)
+              this.errorMessage = err.error
+            else this.errorMessage = err.message
+          }
+        })
+      }
+      
       })
   }
 }

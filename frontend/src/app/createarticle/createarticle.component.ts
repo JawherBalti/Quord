@@ -29,36 +29,36 @@ export class CreatearticleComponent {
     });
 
     // Add custom validator for image field
-    this.createArticleFormGroup.get('image')!.setValidators([
-      Validators.required,
-      this.validateImageSize.bind(this),
-      this.validateImageType.bind(this)
-    ]);
+    // this.createArticleFormGroup.get('image')!.setValidators([
+    //   Validators.required,
+    //   this.validateImageSize.bind(this),
+    //   this.validateImageType.bind(this)
+    // ]);
     this.authorId = this._auth.getAuthorDataFromToken()._id
   }
 
-  validateImageSize(control: FormControl): { [s: string]: boolean } | null {
-    if (!control.value) {
-      return null;
-    }
-    const file = control.value as File;
-    if (file.size > 1024 * 1024) { // 1MB limit
-      return { 'imageSize': true };
-    }
-    return null;
-  }
+  // validateImageSize(control: FormControl): { [s: string]: boolean } | null {
+  //   if (!control.value) {
+  //     return null;
+  //   }
+  //   const file = control.value as File;
+  //   if (file.size > 1024 * 1024) { // 1MB limit
+  //     return { 'imageSize': true };
+  //   }
+  //   return null;
+  // }
 
-  validateImageType(control: FormControl): { [s: string]: boolean } | null {
-    if (!control.value) {
-      return null;
-    }
-    const file = control.value
-    const allowedTypes = ['image/jpeg', 'image/png'];
-    if (!allowedTypes.includes(file.type)) {
-      return { 'imageType': true };
-    }
-    return null;
-  }
+  // validateImageType(control: FormControl): { [s: string]: boolean } | null {
+  //   if (!control.value) {
+  //     return null;
+  //   }
+  //   const file = control.value
+  //   const allowedTypes = ['image/jpeg', 'image/png'];
+  //   if (!allowedTypes.includes(file.type)) {
+  //     return { 'imageType': true };
+  //   }
+  //   return null;
+  // }
 
   select(e: any) {
     const file = e.target.files[0];
@@ -100,33 +100,52 @@ export class CreatearticleComponent {
 
   create() {
     this.isLoading = true;
+    const file = this.createArticleFormGroup.get('image')?.value;
+
+    // Cloudinary upload URL (use unsigned preset for this example)
+    const cloudinaryUrl = 'https://api.cloudinary.com/v1_1/dv1lhvgjr/upload';
     const formData = new FormData();
-
-    Object.keys(this.createArticleFormGroup.controls).forEach(key => {
-
-      if (key !== "tag") {
-        const control = this.createArticleFormGroup.get(key);
-        if (control && control.value !== null) {
-          formData.append(key, control.value);
-        }
-      }
-    });
-
-    formData.append("tags", this.tags.toString())
-    formData.append("authorId", this.authorId)
-
-    this.tags = []
-
-    this.articles.create(formData)
-      .subscribe({
-        next: res => {
-          this.isLoading = false
-          this.router.navigate(["/home"])
-        },
-        error: err => {
-          console.log(err);
-          this.isLoading = false
+  
+    // Add Cloudinary-specific parameters
+    formData.append('file', file);
+    formData.append('upload_preset', 'eiqxfhzq');
+  
+    // Upload to Cloudinary
+    fetch(cloudinaryUrl, {
+      method: 'POST',
+      body: formData,
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.secure_url) {
+          // Add Cloudinary URL to the article data
+          const articleData = {
+            title:this.createArticleFormGroup.get('title')?.value,
+            description:this.createArticleFormGroup.get('description')?.value,
+            content:this.createArticleFormGroup.get('content')?.value,
+            tags: this.tags.toString(),
+            authorId:this.authorId,
+            image: data.secure_url
+          }
+  
+          // Save article to your backend
+          this.articles.create(articleData).subscribe({
+            next: res => {
+              this.isLoading = false;
+              this.router.navigate(['/home']);
+            },
+            error: err => {
+              console.error(err);
+              this.isLoading = false;
+            },
+          });
+        } else {
+          throw new Error('Image upload failed');
         }
       })
+      .catch(err => {
+        console.error(err);
+        this.isLoading = false;
+      });
   }
 }

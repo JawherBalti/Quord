@@ -15,11 +15,17 @@
             class="col-lg-3 col-md-4 col-sm-5 col-6 d-flex justify-content-center align-items-center position-relative"
           >
             <img
+              *ngIf="!isLoadingImage"
               class="img-fluid rounded profile-picture profile-picture-effect"
-              [src]="imageUrl + author.image.toString()"
+              [src]="author.image.toString()"
               alt="Profile picture"
             />
-            <div class="overlay" role="button" (click)="triggerFileUpload()">
+            <div
+              *ngIf="!isLoadingImage"
+              class="overlay"
+              role="button"
+              (click)="triggerFileUpload()"
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="32"
@@ -43,6 +49,11 @@
                 accept="image/*"
               />
             </div>
+            <div
+              *ngIf="isLoadingImage"
+              class="spinner-border text-light"
+              role="status"
+            ></div>
           </div>
 
           <div class="col-lg-9 col-md-12">

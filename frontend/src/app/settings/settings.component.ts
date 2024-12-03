@@ -1,6 +1,8 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { AuthService } from '../services/auth.service';
 import { Author } from '../models/author.model';
+import { switchMap, tap } from 'rxjs';
+import { ImageService } from '../services/image.service';
 
 @Component({
   selector: 'app-settings',
@@ -11,14 +13,14 @@ import { Author } from '../models/author.model';
 export class SettingsComponent {
   @ViewChild('fileInput') fileInput!: ElementRef;
 
-  constructor(private _auth: AuthService) { }
+  constructor(private _auth: AuthService, private imageService: ImageService) { }
 
   authorId: string = ""
   updateRes = {}
   author!: Author
   token: any
-  imageUrl: string = "http://localhost:3000/getImage/"
   isLoading: Boolean = true
+  isLoadingImage: Boolean = false
   isEditingName: Boolean = false
   isEditingNameLoading: Boolean = false
   isEditingAbout: Boolean = false
@@ -30,6 +32,7 @@ export class SettingsComponent {
   }
 
   about: string = ""
+  oldImage: string = ""
 
   ngOnInit(): void {
     this.authorId = this._auth.getAuthorDataFromToken()._id
@@ -40,6 +43,7 @@ export class SettingsComponent {
           this.fullname.name = res.name
           this.fullname.lastName = res.lastName
           this.about = res.about
+          this.oldImage = res.image
           this.isLoading = false
         }, error: err => {
           console.log(err);
@@ -48,7 +52,7 @@ export class SettingsComponent {
         }
       })
   }
-  
+
   changeIsEditingName() {
     this.isEditingName = !this.isEditingName
   }
@@ -62,23 +66,48 @@ export class SettingsComponent {
   }
 
   uploadProfilePicture(e: any): void {
-    let formData = new FormData()
+    this.isLoadingImage = true
     const file = e.target.files[0]
-    formData.append("image", file)
 
-    if (file) {
-      this.updateAuthorImage(formData)
-    }
+    // Cloudinary upload URL (use unsigned preset for this example)
+    const cloudinaryUrl = 'https://api.cloudinary.com/v1_1/dv1lhvgjr/upload';
+    const formData = new FormData();
+    // Add Cloudinary-specific parameters
+    formData.append('file', file);
+    formData.append('upload_preset', 'eiqxfhzq');
+
+    // Upload to Cloudinary
+    fetch(cloudinaryUrl, {
+      method: 'POST',
+      body: formData,
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.secure_url) {
+          this.updateAuthorImage(data.secure_url)
+        }
+        this.isLoadingImage = false
+      })
   }
 
-  updateAuthorImage(formData: FormData): void {
-    this._auth.update(this.authorId, formData)
-      .subscribe({
+  updateAuthorImage(imageUrl: string): void {
+    this._auth.update(this.authorId, { image: imageUrl })
+      .pipe(
+        tap(() => console.log('Image updated successfully.')),
+        switchMap(
+          (res: any) => {
+            this.author = res.author
+            this.token = res.myToken
+            localStorage.setItem("token", this.token)
+            this._auth.updateUserData(res.author);
+            // Extract the public ID and delete the image from cloudinary
+            const publicId = this.imageService.getPublicIdFromUrl(this.oldImage);
+            return this.imageService.deleteImage(publicId);
+          }
+        )
+      ).subscribe({
         next: (res: any) => {
-          this.author = res.author
-          this.token = res.myToken
-          localStorage.setItem("token", this.token)
-          this._auth.updateUserData(res.author);
+          console.log('Image deleted successfully:', res);
         },
         error: err => {
           console.error('Failed to upload image:', err);
@@ -102,7 +131,6 @@ export class SettingsComponent {
         error: err => {
           console.log(err);
           this.isEditingAboutLoading = false
-
         }
       })
   }

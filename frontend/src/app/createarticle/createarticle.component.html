@@ -118,7 +118,7 @@
         *ngIf="createArticleFormGroup.get('image')!.hasError('required')"
         >Please select an image</span
       >
-      <span
+      <!-- <span
         class="text-danger"
         *ngIf="createArticleFormGroup.get('image')!.hasError('imageSize')"
         >Image size should be less than 1MB</span
@@ -127,7 +127,7 @@
         class="text-danger"
         *ngIf="createArticleFormGroup.get('image')!.hasError('imageType')"
         >Only JPEG or PNG images are allowed</span
-      >
+      > -->
     </div>
 
     <div class="mb-3">
