@@ -33,6 +33,10 @@ const Article = mongoose.model("Article", {
     type: Schema.Types.ObjectId, // store user IDs who disliked
     ref: "Author",
   }],
+  comments: [{
+    type: Schema.Types.ObjectId,
+    ref: "Comment"
+  }]
 });
 
 module.exports = Article;
