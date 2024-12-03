@@ -13,7 +13,7 @@ export class BlogListComponent {
   constructor(private articlesData: ArticlesService) { }
 
   articles$!: Observable<Article[]>;
-  imageUrl = "http://localhost:3000/getImage/";
+  imageUrl = "https://quord-api.vercel.app/getImage/";
   errorMessage!: string;
   page: number = 0;
   limit: number = 4;

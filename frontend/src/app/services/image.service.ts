@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 export class ImageService {
 
   constructor(private http: HttpClient) { }
-  private apiUrl = 'http://localhost:3000/delete-image';
+  private apiUrl = 'https://quord-api.vercel.app/delete-image';
 
   deleteImage(publicId: string): Observable<any> {
     return this.http.post(this.apiUrl, { public_id: publicId });

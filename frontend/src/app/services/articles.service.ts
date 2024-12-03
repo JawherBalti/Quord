@@ -11,7 +11,7 @@ export class ArticlesService {
 
   constructor(private http: HttpClient) { }
 
-  url = "http://localhost:3000/articles/"
+  url = "https://quord-api.vercel.app/articles/"
 
   getAuthHeader(): HttpHeaders {
     const token = localStorage.getItem('token');

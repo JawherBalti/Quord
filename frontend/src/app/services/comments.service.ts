@@ -8,7 +8,7 @@ export class CommentsService {
 
   constructor(private http: HttpClient) { }
 
-  url = "http://localhost:3000/comments/"
+  url = "https://quord-api.vercel.app/comments/"
 
   getAuthHeader(): HttpHeaders {
     const token = localStorage.getItem('token');
