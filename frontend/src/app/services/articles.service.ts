@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Article } from '../models/article.module';
 import { Observable } from 'rxjs';
@@ -13,8 +13,21 @@ export class ArticlesService {
 
   url = "http://localhost:3000/articles/"
 
-  create(article: FormData) {
-    return this.http.post(this.url + "create", article)
+  getAuthHeader(): HttpHeaders {
+    const token = localStorage.getItem('token');
+    return new HttpHeaders().set('Authorization', `Bearer ${token}`);
+  }
+
+  create(article: {}) {
+    return this.http.post(this.url + "create", article, { headers: this.getAuthHeader() })
+  }
+
+  delete(id: string): Observable<Article> {
+    return this.http.delete<Article>(this.url + "delete/" + id, { headers: this.getAuthHeader() })
+  }
+
+  update(id: string, article: any): Observable<Article> {
+    return this.http.patch<Article>(this.url + "update/" + id, article)
   }
 
   getAll(params?: { page: number, limit: number }): Observable<PaginatedArticles> {
@@ -30,10 +43,10 @@ export class ArticlesService {
   }
 
   likeArticle(id: string, userId: string): Observable<Article> {
-    return this.http.post<Article>(this.url + "article/" + id + "/like", { userId })
+    return this.http.post<Article>(this.url + "article/" + id + "/like", { userId }, { headers: this.getAuthHeader() })
   }
 
   dislikeArticle(id: string, userId: string): Observable<Article> {
-    return this.http.post<Article>(this.url + "article/" + id + "/dislike", { userId })
+    return this.http.post<Article>(this.url + "article/" + id + "/dislike", { userId }, { headers: this.getAuthHeader() })
   }
 }
